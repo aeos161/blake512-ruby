@@ -1,40 +1,36 @@
 # blake512-ruby
 
-This is a standalone MRI gem in development for the final
-original BLAKE-512 algorithm. The gem name is `blake512-ruby`; its Ruby entrypoint
-is `require "aeos/blake512"`, and its namespace is `Aeos::Blake512`. The version
-is `0.1.0`. **Hashing is not implemented yet.** The planned public operations are
-`Aeos::Blake512.digest(bytes)` and `.hexdigest(bytes)`; neither is available in
-this phase.
+This MRI gem hashes exact String bytes with the final, 16-round original
+BLAKE-512 algorithm. Require it with `require "aeos/blake512"` and use the
+`Aeos::Blake512` namespace:
 
-The planned implementation wraps the designer's C reference. It will not use
-Rails, OpenSSL, FFI, Primus, BLAKE2, or BLAKE3 as a hashing fallback.
+```ruby
+binary = Aeos::Blake512.digest("abc")
+hex = Aeos::Blake512.hexdigest("abc")
+```
 
-## Local development
+`digest` returns a fresh 64-byte binary String. `hexdigest` returns 128
+lowercase ASCII hex characters. Both accept String subclasses and reject
+other objects with `TypeError`; neither converts objects or text encodings.
+The binding uses the pinned designer C reference. It has no Rails, OpenSSL,
+FFI, Primus, BLAKE2, or BLAKE3 runtime dependency or fallback.
 
-The initial target is MRI 2.7.4 on macOS arm64. Other Ruby/platform combinations
-have not been validated. With that Ruby selected and the development gems
-installed, run `bundle exec rake spec`. To check the current package, run
-`gem build blake512-ruby.gemspec` and inspect the built gem's file list.
-The package currently supplies the Ruby loader, version, type signature,
-pinned reference source, notices, and documentation. Installing it does not
-enable hashing. See `VECTORS.md` for the independently checked fixture set.
+## Checkout build
 
-## Native build layout
+The validated development target is MRI 2.7.4 on macOS arm64. Select that
+Ruby, install the Gemfile's development dependencies, then run
+`bundle exec rake compile` to build and copy the native library beneath
+`lib/aeos/blake512/`. Run `bundle exec rake spec` for the 54 examples;
+that task also rebuilds the library. The native library is required when the
+gem is loaded. Loading does not compile or download anything.
 
-The pinned upstream C source, header, and CC0 notice are preserved under
-`ext/aeos_blake512/upstream/`; see `UPSTREAM.md` for provenance and hashes.
-Later phases will add the Ruby binding and an `extconf.rb`. The compiled library
-will load privately beneath `aeos/blake512/`. The gemspec will register that extension only when those
-files and a working build exist. There is no native build or runtime fallback
-in this skeleton.
-
-The gemspec lists each packaged file explicitly, including the upstream source,
-header, and license. Build outputs must stay excluded. A later phase will verify
-clean-checkout compilation and an isolated installed-gem smoke check before this
-gem is described as usable for hashing.
+The source gem registers `ext/aeos_blake512/extconf.rb` for native compilation
+at installation. An isolated installed-gem build and broader platform matrix
+are Phase 4 validation gates; this checkout result alone does not establish
+them. `UPSTREAM.md` records the unmodified CC0 source and reviewed build
+adaptation; `VECTORS.md` records independent digest evidence.
 
 ## License
 
-The current gem skeleton retains the repository's existing MIT license.
-The imported upstream C reference retains its separate CC0 notice.
+The Ruby binding retains the repository's MIT license. The imported upstream
+C reference retains its separate CC0 notice.

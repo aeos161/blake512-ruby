@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Aeos161"]
   spec.email = ["aeos161@protonmail.com"]
   spec.summary = "Ruby gem skeleton for the original BLAKE-512 algorithm"
-  spec.description = "Pinned original BLAKE-512 C reference and Ruby gem skeleton; hashing is not implemented yet."
+  spec.description = "MRI binding for the final original 16-round BLAKE-512 reference implementation."
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.7.4"
 
@@ -20,6 +20,11 @@ Gem::Specification.new do |spec|
     ext/aeos_blake512/upstream/blake512.c
     ext/aeos_blake512/upstream/LICENSE
     ext/aeos_blake512/upstream/README.md
+    ext/aeos_blake512/extconf.rb
+    ext/aeos_blake512/blake512_core.h
+    ext/aeos_blake512/blake512_core.inc
+    ext/aeos_blake512/blake512_native.c
   ]
   spec.require_paths = ["lib"]
+  spec.extensions = ["ext/aeos_blake512/extconf.rb"]
 end

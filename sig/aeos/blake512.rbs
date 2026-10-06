@@ -1,5 +1,8 @@
 module Aeos
   module Blake512
     VERSION: String
+
+    def self.digest: (String bytes) -> String
+    def self.hexdigest: (String bytes) -> String
   end
 end
