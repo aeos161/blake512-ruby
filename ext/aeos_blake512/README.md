@@ -1,5 +1,7 @@
 # Native extension layout
 
-Reserved for the verified original BLAKE-512 C source, headers, notices, Ruby
-binding, and `extconf.rb`. These files and extension registration will be added
-in later phases. This directory currently has no buildable extension.
+`upstream/` contains byte-identical source and CC0 notices pinned in
+`UPSTREAM.md`. It is an auditable reference snapshot, not yet a Ruby extension.
+The upstream C file includes a CLI `main` and self-tests. Phase 3 will exclude
+those from extension compilation, add a binding and `extconf.rb`, and document
+any local patch. No extension is registered in the gemspec yet.

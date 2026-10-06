@@ -1,0 +1,124 @@
+{
+  "algorithm": "Original final BLAKE-512, 16 rounds, unsalted and unkeyed",
+  "oracle": {
+    "name": "@noble/hashes blake1",
+    "version": "1.8.0",
+    "git_commit": "32f700f38ec49d7e6b2ab687904d6b2d7d60d80a",
+    "npm_tarball_sha256": "e8a765d92c04faaccba8776411c5038cb195f812ee629fce07e1d2e6aec80ea0",
+    "source_blake1_ts_sha256": "bc232796e5e0811d81d96b120c41ef7166f9df2f5d5af516075be31571f6f586"
+  },
+  "vectors": [
+    {
+      "id": "zero_1",
+      "input": {
+        "repeat_hex": "00",
+        "length": 1
+      },
+      "expected_hex": "97961587f6d970faba6d2478045de6d1fabd09b61ae50932054d52bc29d31be4ff9102b9f69e2bbdb83be13d4b9c06091e5fa0b48bd081b634058be0ec49beb3",
+      "provenance": "designer-self-test"
+    },
+    {
+      "id": "zero_144",
+      "input": {
+        "repeat_hex": "00",
+        "length": 144
+      },
+      "expected_hex": "313717d608e9cf758dcb1eb0f0c3cf9fc150b2d500fb33f51c52afc99d358a2f1374b8a38bba7974e7f6ef79cab16f22ce1e649d6e01ad9589c213045d545dde",
+      "provenance": "designer-self-test"
+    },
+    {
+      "id": "empty",
+      "input": {
+        "hex": ""
+      },
+      "expected_hex": "a8cfbbd73726062df0c6864dda65defe58ef0cc52a5625090fa17601e1eecd1b628e94f396ae402a00acc9eab77b4d4c2e852aaaa25a636d80af3fc7913ef5b8",
+      "provenance": "noble-test-literal"
+    },
+    {
+      "id": "abc",
+      "input": {
+        "hex": "616263"
+      },
+      "expected_hex": "14266c7c704a3b58fb421ee69fd005fcc6eeff742136be67435df995b7c986e7cbde4dbde135e7689c354d2bc5b8d260536c554b4f84c118e61efc576fed7cd3",
+      "provenance": "oracle-derived"
+    },
+    {
+      "id": "a_110",
+      "input": {
+        "repeat_hex": "41",
+        "length": 110
+      },
+      "expected_hex": "9c1f2fd1348708fe5623bd5ab4fb795b1823d69cc9abd14feb31ce3ddbf1223f9850c0a1f31b38dd8d7d9483a59d0a41f395d44c0a5698cac9565933c27b5961",
+      "provenance": "oracle-derived"
+    },
+    {
+      "id": "a_111",
+      "input": {
+        "repeat_hex": "41",
+        "length": 111
+      },
+      "expected_hex": "20d0cb7b106bd97b00e0302afb4fdfede5863a23c5fa9f27290176219f9d787d11fc9d20b3db8384a78ff1805157148154f4024b9848f5addee9cf3cecb75460",
+      "provenance": "oracle-derived"
+    },
+    {
+      "id": "a_112",
+      "input": {
+        "repeat_hex": "41",
+        "length": 112
+      },
+      "expected_hex": "a07cc0c8179ed6707cbc12c1a4df02b6646f6495c8edbe81b57bd104adc60041768092d3200acef1bd0f02cf86a3f6376e0f41144892a2102db25379db084cf3",
+      "provenance": "oracle-derived"
+    },
+    {
+      "id": "a_127",
+      "input": {
+        "repeat_hex": "41",
+        "length": 127
+      },
+      "expected_hex": "0e1900b002895f85bfb0c5d216684cfe117e2dd787254ca6a44cd633c3c735ad7b707480b5db076582851bb8781c6fd7459e3e0d86bb8d6be8d0fe6b6ecfe4e0",
+      "provenance": "oracle-derived"
+    },
+    {
+      "id": "a_128",
+      "input": {
+        "repeat_hex": "41",
+        "length": 128
+      },
+      "expected_hex": "ab691f6ae2543e81bf3276c7ea463212cdeff7b00fdc804e6f07965e1e1343640f60d0e7174438c6d67eb76b900ceb6b1fed7d9bcf51356cb55e59891ed8fc6a",
+      "provenance": "oracle-derived"
+    },
+    {
+      "id": "a_129",
+      "input": {
+        "repeat_hex": "41",
+        "length": 129
+      },
+      "expected_hex": "228c1a8d41585c4dfc3a16659177f28cfbf1b2b6e114be516aeb27bff44fc5bd7142ca358039578f4e23b8e7c4fb51f71e8a7a5033f2a0d677d74b83499751f7",
+      "provenance": "oracle-derived"
+    },
+    {
+      "id": "binary_short",
+      "input": {
+        "hex": "00ff807f00fe8182"
+      },
+      "expected_hex": "ff189da5eb30bbd216163b29d8cbebb3f428a60a14c6e18e22a0a2180476c795c516f3af0adcbc6184c7abd0276370090ee1244494a3de88b745acc81ec6d1b0",
+      "provenance": "oracle-derived"
+    },
+    {
+      "id": "binary_300",
+      "input": {
+        "sequence_mod_256": 300
+      },
+      "expected_hex": "e703ee0e0cc0d7d96617d46478ae1edff55596d352e859d68a54715728fb0641bf5b98946a83257ec8465821e7304065f8e137fb9c9d2af4b6c66e76ef67545d",
+      "provenance": "oracle-derived"
+    },
+    {
+      "id": "binary_1024",
+      "input": {
+        "sequence_mod_256": 1024
+      },
+      "expected_hex": "e855e95926207d8ef5f5bd998c5f04f1cd727db7298bba61b247fc33c6dd229a76a1bd9cb9daedcfa4ab4ec251ed99215ff3336196209538c0c699ab148f4e79",
+      "provenance": "oracle-derived"
+    }
+  ]
+}
