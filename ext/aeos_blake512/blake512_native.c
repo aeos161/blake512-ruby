@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "blake512_core.inc"
+#include "generated_build_identity.h"
 
 static VALUE aeos_blake512_digest(VALUE self, VALUE input)
 {
@@ -26,9 +27,17 @@ static VALUE aeos_blake512_digest(VALUE self, VALUE input)
   return result;
 }
 
+static VALUE aeos_blake512_native_identity(VALUE self)
+{
+  (void)self;
+  return rb_str_new((const char *)aeos_build_identity_json, sizeof(aeos_build_identity_json));
+}
+
 void Init_blake512_native(void)
 {
   VALUE aeos = rb_define_module("Aeos");
   VALUE blake512 = rb_define_module_under(aeos, "Blake512");
   rb_define_singleton_method(blake512, "digest", aeos_blake512_digest, 1);
+  rb_define_private_method(rb_singleton_class(blake512), "__native_build_identity",
+                           aeos_blake512_native_identity, 0);
 }
