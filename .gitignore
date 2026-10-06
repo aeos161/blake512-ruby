@@ -1,0 +1,19 @@
+/.bundle/
+/Gemfile.lock
+/.yardoc/
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+*.gem
+
+# Native extension build outputs
+/ext/aeos_blake512/Makefile
+/ext/aeos_blake512/*.o
+/ext/aeos_blake512/*.bundle
+/ext/aeos_blake512/*.so
+/ext/aeos_blake512/mkmf.log
+/lib/aeos/blake512/*.bundle
+/lib/aeos/blake512/*.so
