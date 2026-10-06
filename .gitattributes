@@ -1,1 +1,2 @@
 ext/aeos_blake512/upstream/* whitespace=-blank-at-eol
+ext/aeos_blake512/blake512_core.h whitespace=-blank-at-eol

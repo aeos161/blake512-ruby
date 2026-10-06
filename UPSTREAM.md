@@ -27,18 +27,29 @@ full notice is preserved as `upstream/LICENSE`. The gem wrapper's existing
 files.
 
 The upstream `blake512.c` includes its own two zero-input self-tests and a
-file-hashing CLI `main`. These remain in the snapshot as evidence; they must
-**not** be linked into the Ruby extension. Phase 3 should make a minimal,
-reviewed copy or patch that excludes `blake512_test` and `main` from extension
-builds while leaving compression, update and finalization unchanged. A
-conditional compile guard around those CLI-only functions is sufficient.
-The shared `blake.h` defines `sigma` and `u512` tables with external linkage,
-so include it in only the reference translation unit, or split declarations
-and definitions without duplicating them. The Ruby binding can forward-declare
-only `blake512_hash` in a private header. Keep exported symbols private where
-possible, and inspect them in the compiled extension.
+file-hashing CLI `main`. These remain untouched in the snapshot as evidence.
+Phase 3 builds from a reviewed adaptation kept beside that snapshot:
 
-`blake512_update` accepts a `uint64_t` byte length; its local buffer counters
-are `int` but stay within a 128-byte block. Phase 3 must check conversion from
-Ruby's signed String length, pointer lifetime and large one-shot calls before
-using that entrypoint. No native Ruby build is registered in Phase 2.
+| Build input | SHA-256 | Changes from pinned source |
+| --- | --- | --- |
+| `blake512_core.h` | `e0dd712a68e78a8058da4c10181c3a4690ce67db543869cb9d451aed1f55cfc6` | `blake.h` with only `sigma`, `u256`, and `u512` changed from `const` to `static const`. |
+| `blake512_core.inc` | `c0ead701a59c734a2d172ce7667324ea9ea14776f189d381fc06110b1cf514be` | `blake512.c` with its include renamed, five `blake512_*` functions marked `static`, the CLI self-test plus `main` removed, and trailing blank lines trimmed. |
+
+The reference compression, update, counter, and finalization bodies are
+otherwise unchanged. `blake512_native.c` includes the `.inc` file, creating
+one translation unit. No source table or function is exported from the
+extension; on the tested build, `nm -gU` reports only
+`Init_blake512_native`. Diff the adapted files against their `upstream/`
+counterparts to review every change. The upstream `blake.h` defines tables,
+so compiling it in more than one translation unit would create duplicate
+symbols; this layout avoids that.
+
+`blake512_update` accepts a `uint64_t` byte length. The binding checks that
+input is a String (including subclasses), reads Ruby's signed `long` length,
+rejects a negative or unrepresentable length, and passes that length without
+narrowing to `int`. The upstream `int` buffer counters stay within a 128-byte
+block as full blocks are consumed from the `uint64_t` length. The binding
+holds the GVL and makes no Ruby calls while it uses the input pointer, then
+copies 64 output bytes into a new Ruby String. A fresh stack state is used
+for each call. Large one-shot calls hold the GVL; streaming and GVL release
+remain out of scope.
