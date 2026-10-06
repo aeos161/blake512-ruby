@@ -1,0 +1,5 @@
+module Aeos
+  module Blake512
+    VERSION: String
+  end
+end
