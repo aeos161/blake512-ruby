@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
+require "digest"
 require "json"
+require "rbconfig"
+require "tmpdir"
 
 module Blake512SpecVectors
   PATH = File.expand_path("../../fixtures/blake512_vectors.json", __dir__)
@@ -23,6 +26,153 @@ RSpec.describe Aeos::Blake512 do
   describe "::VERSION" do
     it "identifies the Phase 1 gem version" do
       expect(Aeos::Blake512::VERSION).to eq("0.1.0")
+    end
+  end
+
+  describe "::BuildMismatch" do
+    it "is a native loading error" do
+      mismatch_class = described_class::BuildMismatch
+
+      expect(mismatch_class.ancestors).to include(LoadError)
+    end
+  end
+
+  describe ".build_info" do
+    it "returns the agreed descriptor fields with String keys" do
+      expected_keys = %w[schema_version algorithm gem_version upstream_revision source_sha256 native_sha256
+                         ruby_engine ruby_api_version ruby_platform dlext compiler compile_flags native_path]
+
+      info = described_class.build_info
+
+      expect(info.keys).to match_array(expected_keys)
+    end
+
+    it "reports schema version 1" do
+      info = described_class.build_info
+
+      expect(info.fetch("schema_version")).to eq(1)
+    end
+
+    it "identifies the original BLAKE-512 algorithm" do
+      info = described_class.build_info
+
+      expect(info.fetch("algorithm")).to eq("blake512")
+    end
+
+    it "reports the loaded gem version" do
+      info = described_class.build_info
+
+      expect(info.fetch("gem_version")).to eq(described_class::VERSION)
+    end
+
+    it "reports the pinned upstream revision" do
+      info = described_class.build_info
+
+      expect(info.fetch("upstream_revision")).to eq("65f9ac8101191b12368e533afed6486c5b694fa3")
+    end
+
+    it "reports a lowercase source SHA-256" do
+      info = described_class.build_info
+
+      expect(info.fetch("source_sha256")).to match(/\A[0-9a-f]{64}\z/)
+    end
+
+    it "reports the SHA-256 of the loaded native file" do
+      info = described_class.build_info
+
+      expect(info.fetch("native_sha256")).to eq(Digest::SHA256.file(info.fetch("native_path")).hexdigest)
+    end
+
+    it "reports the actually loaded namespaced native path" do
+      feature = $LOADED_FEATURES.find do |path|
+        path.end_with?("/aeos/blake512/blake512_native.#{RbConfig::CONFIG.fetch("DLEXT")}")
+      end
+
+      info = described_class.build_info
+
+      expect(info.fetch("native_path")).to eq(File.expand_path(feature))
+    end
+
+    it "records MRI as the build engine" do
+      info = described_class.build_info
+
+      expect(info.fetch("ruby_engine")).to eq("ruby")
+    end
+
+    it "records the build Ruby API version" do
+      info = described_class.build_info
+
+      expect(info.fetch("ruby_api_version")).to eq(RbConfig::CONFIG.fetch("ruby_version"))
+    end
+
+    it "records the build platform" do
+      info = described_class.build_info
+
+      expect(info.fetch("ruby_platform")).to eq(RbConfig::CONFIG.fetch("arch"))
+    end
+
+    it "records the native extension suffix" do
+      info = described_class.build_info
+
+      expect(info.fetch("dlext")).to eq(RbConfig::CONFIG.fetch("DLEXT"))
+    end
+
+    it "records a compiler command" do
+      info = described_class.build_info
+
+      expect(info.fetch("compiler")).to be_a(String)
+    end
+
+    it "records compile flags as String keys and values" do
+      flags = described_class.build_info.fetch("compile_flags")
+
+      pairs_are_strings = flags.all? { |key, value| key.is_a?(String) && value.is_a?(String) }
+
+      expect(pairs_are_strings).to be_truthy
+    end
+
+    it "records compile flags in a Hash" do
+      info = described_class.build_info
+
+      expect(info.fetch("compile_flags")).to be_a(Hash)
+    end
+
+    it "freezes the outer descriptor" do
+      info = described_class.build_info
+
+      expect(info).to be_frozen
+    end
+
+    it "freezes nested compile flags" do
+      flags = described_class.build_info.fetch("compile_flags")
+
+      expect(flags).to be_frozen
+    end
+
+    it "freezes nested String values" do
+      algorithm = described_class.build_info.fetch("algorithm")
+
+      expect { algorithm.replace("changed") }.to raise_error(FrozenError)
+    end
+
+    it "freezes descriptor keys" do
+      key = described_class.build_info.keys.first
+
+      expect { key.replace("changed") }.to raise_error(FrozenError)
+    end
+
+    it "freezes nested compile flag Strings" do
+      compiler_flag = described_class.build_info.fetch("compile_flags").values.first
+
+      expect { compiler_flag.replace("changed") }.to raise_error(FrozenError)
+    end
+
+    it "retains its loaded artifact snapshot across repeated access" do
+      first = described_class.build_info
+
+      second = Dir.mktmpdir { |directory| Dir.chdir(directory) { described_class.build_info } }
+
+      expect(second).to eq(first)
     end
   end
 
