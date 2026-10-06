@@ -9,4 +9,9 @@ tables `static`, and otherwise retains the reference compression, counter,
 and padding logic. See `UPSTREAM.md` for the exact patch inventory.
 
 `extconf.rb` registers the private `aeos/blake512/blake512_native` load target.
-The checkout `rake compile` task builds and copies it beneath `lib/`.
+`extconf.rb` also reads the versioned `source_inputs.json` manifest and
+embeds the source digest, membership, Ruby build configuration, compiler, and
+flags in a generated header. That header is recreated for every configuration
+and is absent from the source gem. The checkout `rake compile` task removes any
+old copied library before configuring and building, then copies the new library
+beneath `lib/`. `rake clean` removes only known generated files.

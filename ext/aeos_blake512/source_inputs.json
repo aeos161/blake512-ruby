@@ -1,0 +1,1 @@
+{"schema_version":1,"paths":["ext/aeos_blake512/blake512_core.h","ext/aeos_blake512/blake512_core.inc","ext/aeos_blake512/blake512_native.c","ext/aeos_blake512/extconf.rb","ext/aeos_blake512/upstream/blake.h","ext/aeos_blake512/upstream/blake512.c","lib/aeos/blake512.rb","lib/aeos/blake512/build_identity.rb","lib/aeos/blake512/version.rb"]}
